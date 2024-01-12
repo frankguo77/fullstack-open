@@ -10,4 +10,4 @@ const Notification = ({notification}) => {
     ) 
 } 
 
-export default Notificatio
+export default Notification
