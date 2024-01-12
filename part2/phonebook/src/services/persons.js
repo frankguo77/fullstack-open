@@ -1,5 +1,5 @@
 import axios from "axios"
-const baseUrl = 'https://urban-broccoli-qrx665wg7xc4xjq-3001.app.github.dev/api/persons'
+const baseUrl = '/api/persons'
 
 // const baseUrl = 'http://localhost:3001/api/persons'
 
