@@ -23,8 +23,12 @@ function App(props) {
     personsService
     .getAll()
     .then(persons => {
+      console.log(persons)
       persons.forEach(m => maxid = maxid > m.id ? maxid : m.id) 
       setPerson(persons)
+    })
+    .catch(err =>{
+      console.log(err)
     })
   },[])
 

@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/persons': {
-        target: 'https://urban-broccoli-qrx665wg7xc4xjq-3001.app.github.dev/persons',
+      '/api/persons': {
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
-        rewrite: path => path.replace('/persons','')
+        rewrite: path => path.replace('/api','')
       }
     }
   }

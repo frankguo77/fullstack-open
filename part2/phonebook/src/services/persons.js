@@ -1,9 +1,11 @@
 import axios from "axios"
 const baseUrl = '/api/persons'
 
-// const baseUrl = 'http://localhost:3001/api/persons'
+// const baseUrl = '/persons'
 
 const getAll = () => {
+    console.log()
+
     const request =  axios.get(baseUrl)
     return request.then(res => res.data)
 }

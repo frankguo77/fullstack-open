@@ -1,0 +1,14 @@
+GET http://localhost:3001/api/persons
+
+
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "test-restclient",
+    "number": "123-456"
+}
+
+###
+GET http://localhost:3001/api/persons/65a78aaa7ad914671ad6e3f1
