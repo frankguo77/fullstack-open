@@ -55,7 +55,7 @@ function App(props) {
     setNotification(notification)
     setTimeout(() => {
       setNotification(null)
-    }, 10000)
+    }, 8000)
   }
 
   function deleteOne (dperson) {
@@ -72,6 +72,10 @@ function App(props) {
       console.log('newPersons:', newPersons)
       setPerson(newPersons)
     })
+    .catch(error => {
+      console.log(error.response.data.error)
+      sendNotification('error', error.response.data.error)
+    })
   }
   
   function addNew(event) {
@@ -85,12 +89,11 @@ function App(props) {
         .update(exsit.id, exsit)
         .then(data => {
           setPerson(person.map(pp => pp.name != data.name ? pp : data))
+          sendNotification('success', `Updated ${data.name}`)
         })
         .catch(error => {
-          console.error(error)
-          if (error.response.status == 404) {
-              sendNotification('error', `Information of ${newName} has alrady been removed from server`)
-          }
+          console.error(error.response.data.error)
+          sendNotification('error',error.response.data.error)
         })
       }
       return
@@ -104,6 +107,10 @@ function App(props) {
       setNewName('')
       setNewNumber('')
       sendNotification('success', `Added ${data.name}`)
+    })
+    .catch(error => {
+      console.error(error.response.data.error)
+      sendNotification('error',error.response.data.error)
     })
   }
 
