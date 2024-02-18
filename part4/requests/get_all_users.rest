@@ -1,4 +1,3 @@
-#host
 http://localhost:3003
 
-GET /api/blogs
+GET /api/users

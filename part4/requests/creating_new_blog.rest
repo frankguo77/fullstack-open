@@ -1,0 +1,15 @@
+###
+#host
+http://localhost:3003
+
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkZyYW5rIiwiaWQiOiI2NWM0YTU4Y2ZiNzdlMjI2Yzg1ZGQ4ODMiLCJpYXQiOjE3MDgyMjU1ODh9.fS6EKdEsPABI2HfXssh0BtAXOl1U8BqOHdnJlCfFezA
+
+POST /api/blogs
+
+{
+    "title": "test-blog",
+    "author": "Frank",
+    "url": "www.google.com",
+    "likes": 1
+}
