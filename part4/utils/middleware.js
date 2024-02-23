@@ -8,7 +8,7 @@ const requestLogger = morgan(':method :url :status :res[content-length] - :respo
 
 const tokenExtractor = (request, response, next) => {
   const auth = request.get('authorization')
-  console.log(auth)
+  console.log('atuth', auth)
   if (auth && auth.startsWith('Bearer')) {
     request.token = auth.replace('Bearer ', '')
   } else {
@@ -31,7 +31,7 @@ const userExtractor = async (request, response, next) => {
     }
   }
 
-  console.log('usr found.', request.user)
+  console.log('user fokund.', request.user)
   
   return next()
 }
