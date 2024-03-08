@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogFrom'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -18,6 +20,15 @@ const App = () => {
   })  
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const displayNotification = (status, msg) => {
     const notification = {
       status: status,
@@ -30,6 +41,13 @@ const App = () => {
     }, 5000)
   }
 
+  const handleLogout = (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedBlogappUser')
+    blogService.setToken(null)
+    setUser(null)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('logging in with', username, password)
@@ -38,7 +56,9 @@ const App = () => {
         username, password
       })
       console.log('login ok.', user)
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -47,10 +67,44 @@ const App = () => {
     }
   }
 
+  const addBlog = async (newBlog) => {
+    blogFormRef.current.toggleVisibility()
+    try {
+      const returnedBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(returnedBlog))
+      displayNotification('success', `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+    } catch (err) {
+      console.log('addBlog err', err)
+      displayNotification('error', 'add blog error')
+    }
+  }
+  
+  const updateBlog = async (newBlog) => {
+    try {
+      const returnedBlog = await blogService.update(newBlog)
+      setBlogs(blogs.map((blog) => blog.id !== returnedBlog.id ? blog : returnedBlog))
+      // displayNotification('success', `a blog ${returnedBlog.title} by ${returnedBlog.author} updated`)
+    } catch (err) {
+      console.log('addBlog err', err)
+      displayNotification('error', 'update blog error')
+    }
+  }
+  
+  const revomeBlog = async (blog) => {
+    try {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter((bb) => bb.id !== blog.id))
+      // displayNotification('success', `a blog ${returnedBlog.title} by ${returnedBlog.author} updated`)
+    } catch (err) {
+      console.log('delete err', err)
+      displayNotification('error', 'delete blog error')
+    }
+  }
+
   const loginForm = () => (
       <form onSubmit={handleLogin} >
         <div>
-          username
+          username:
           <input
             type='text'
             value={username}
@@ -59,17 +113,20 @@ const App = () => {
           />
         </div>
         <div>
-          password
+          password:
           <input
             type='password'
             value={password}
             name='Password'
+            autoComplete='current-password'
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
         <button type='submit'>login</button>
       </form>
     )
+
+    const blogFormRef = useRef()
   
   return (
     <div>
@@ -79,12 +136,15 @@ const App = () => {
       {user && <div>
         <div>
           {user.username} loged in
-          <button type='button'>Logout</button>
+          <button type='button' onClick={handleLogout}>Logout</button>
         </div>
+        <Togglable buttonLabel = 'create new blog' ref={blogFormRef}>
+        {/* <Togglable > */}
+          <BlogForm addBlog = {addBlog} />
+        </Togglable>
         <div>
-          {blogs.length} blogs
           {blogs.map( blog => 
-            <Blog blog = {blog} />
+            <Blog key={blog.id} blog = {blog} user={user} handleUpdate={updateBlog} handleDelete={revomeBlog} />
           )}
         </div>
       </div>}

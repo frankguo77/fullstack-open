@@ -36,6 +36,7 @@ blogRouter.post('/', async (request, response, next) => {
   console.log('blog to be saved', blog)
 
   const savedBlog = await blog.save()
+  savedBlog.populate('user', {username: 1, name: 1})
   console.log('savedBlog', savedBlog._id)
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
@@ -71,10 +72,11 @@ blogRouter.put('/:id', async (request, response,next) => {
     request.params.id,
     {title, author, url, likes},
     {new: true}
-
   )
-  console.log(updatedBlog)
-  response.json(updatedBlog)
+  .populate('user', {username: 1, name: 1})
+  console.log(updatedBlog)  
+//  updatedBlog.populate('user',{username:0, name:1})
+ response.json(updatedBlog)
 })
 
 module.exports =  blogRouter
